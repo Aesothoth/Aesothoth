@@ -77,7 +77,7 @@ public class DoubleGravityControl : MonoBehaviour
             {
                 distance = Vector3.Distance(transform.position, Gravity2.gameObject.transform.position);
             }else{
-                distance = Vector3.Distance(transform.position, (Gravity1.gameObject.transform.position + Gravity2.gameObject.transform.position) / 2f);
+                distance = Vector3.Distance(transform.position, ((Gravity1.gameObject.transform.position * Gravity1.gravity) + (Gravity2.gameObject.transform.position * Gravity2.gravity) / (Gravity1.gravity + Gravity2.gravity)));
             }
             
 
