@@ -23,8 +23,11 @@ public class Movement : MonoBehaviour
 
     [Header("Vertical Launch")]
     public float launchForce;
+    public float jumpForce;
     public float airMultiplier;
-    bool firstLaunch, secondLaunch, launchKey;
+    private bool launchKey1, launchKey2, jumpKey;
+    [HideInInspector]
+    public bool firstLaunch, secondLaunch;
     // Start is called before the first frame update
     void Start()
     {
@@ -35,34 +38,48 @@ public class Movement : MonoBehaviour
 
     void Update()
     {
-        launchKey = Input.GetKeyDown("space");
+        launchKey1 = Input.GetKeyDown("q");
+        launchKey2 = Input.GetKeyDown("e");
+        jumpKey = Input.GetKeyDown("space");
         grounded = Physics.Raycast(transform.position, -transform.up, playerHeight * 0.5f + 0.2f, ground);
 
         if(grounded)
         {
+            rb.drag = groundDrag;
             firstLaunch = false;
             secondLaunch = false;
-            rb.drag = groundDrag;
         }
         else{
             rb.drag = 0;
         }
-        if(launchKey)
+        if(launchKey1)
+       {
+            if(!firstLaunch)
+            {
+                Launch(1);
+                firstLaunch = true;
+            }else if(!secondLaunch)
+            {
+                Launch(1);
+                secondLaunch = true;
+            }
+       }else if(launchKey2)
+       {
+            if(!firstLaunch)
+            {
+                Launch(-1);
+                firstLaunch = true;
+            }else if(!secondLaunch)
+            {
+                Launch(-1);
+                secondLaunch = true;
+            }
+       }
+       if(jumpKey)
        {
             if(grounded)
             {
-                Launch();
-            }else
-            {
-                if(!firstLaunch)
-                {
-                    Launch();
-                    firstLaunch = true;
-                }else if(!secondLaunch)
-                {
-                    Launch();
-                    secondLaunch = true;
-                }
+                Jump();
             }
        }
     }
@@ -78,13 +95,12 @@ public class Movement : MonoBehaviour
     {
         horizontal = Input.GetAxisRaw("Horizontal");
         vertical = Input.GetAxisRaw("Vertical");
-        
-
     }
 
     private void MovePlayer()
     {
         moveDirection = orientation.forward * vertical + orientation.right * horizontal;
+        moveDirection = new Vector3(moveDirection.x, 0f, moveDirection.z);
 
         if(grounded)
         {
@@ -95,12 +111,19 @@ public class Movement : MonoBehaviour
        
     }
 
-    private void Launch()
+    private void Launch(float num)
     {
         // reset Y velocity
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+        Vector3 up = new Vector3(0f, num, 0f);
 
-        rb.AddForce(transform.up * launchForce, ForceMode.Impulse);
-        print("Jump");
+        rb.AddForce(up * launchForce, ForceMode.Impulse);
+    }
+
+    private void Jump()
+    {
+        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+
+        rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
     }
 }
