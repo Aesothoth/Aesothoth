@@ -8,13 +8,14 @@ public class ObjectOrbit : MonoBehaviour
     public GravityOrbit gravity;
     public float speed;
     public bool binaryOrbit;
+    public float waitTime = 0f;
 
     private Vector3 moveDirection;
 
     // Start is called before the first frame update
     void Start()
     {
-        Invoke("StartOrbit", 0f);
+        Invoke("StartOrbit", waitTime);
     }
 
     // Update is called once per frame
