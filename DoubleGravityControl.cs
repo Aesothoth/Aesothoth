@@ -86,7 +86,7 @@ public class DoubleGravityControl : MonoBehaviour
             force.force = (gravityVector * rb.mass);
         }
         else{
-            Vector3 gravityVector = new Vector3(0f, 0f, 0f);
+            Vector3 gravityVector = new Vector3(0f, -100f, 0f);
             force.force = gravityVector;
         }
     }

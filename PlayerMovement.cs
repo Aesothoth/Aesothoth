@@ -20,12 +20,13 @@ public class Movement : MonoBehaviour
     public LayerMask ground;
     public float groundDrag;
     public bool grounded;
+    public GameObject teleporter;
 
     [Header("Vertical Launch")]
     public float launchForce;
     public float jumpForce;
     public float airMultiplier;
-    private bool launchKey1, launchKey2, jumpKey;
+    private bool launchKey1, launchKey2, jumpKey, reset, teleporterExists;
     [HideInInspector]
     public bool firstLaunch, secondLaunch;
     // Start is called before the first frame update
@@ -41,6 +42,7 @@ public class Movement : MonoBehaviour
         launchKey1 = Input.GetKeyDown("q");
         launchKey2 = Input.GetKeyDown("e");
         jumpKey = Input.GetKeyDown("space");
+        reset = Input.GetKeyDown("r");
         grounded = Physics.Raycast(transform.position, -transform.up, playerHeight * 0.5f + 0.2f, ground);
 
         if(grounded)
@@ -82,6 +84,17 @@ public class Movement : MonoBehaviour
                 Jump();
             }
        }
+       if(reset)
+       {
+        if(teleporterExists)
+        {
+            teleporterExists = false;
+        }else
+        {
+            Instantiate(teleporter, transform.position, Quaternion.identity);
+            teleporterExists = true;
+        }
+       }
     }
 
     // Update is called once per frame
@@ -100,7 +113,7 @@ public class Movement : MonoBehaviour
     private void MovePlayer()
     {
         moveDirection = orientation.forward * vertical + orientation.right * horizontal;
-        moveDirection = new Vector3(moveDirection.x, 0f, moveDirection.z);
+        moveDirection = new Vector3(moveDirection.x, moveDirection.y, moveDirection.z);
 
         if(grounded)
         {
@@ -114,8 +127,12 @@ public class Movement : MonoBehaviour
     private void Launch(float num)
     {
         // reset Y velocity
-        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
         Vector3 up = new Vector3(0f, num, 0f);
+        float Y = rb.velocity.y;
+        if((Y > 0 && num < 0) || (Y < 0 && num > 0))
+        {
+            rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+        }
 
         rb.AddForce(up * launchForce, ForceMode.Impulse);
     }
