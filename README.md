@@ -1,6 +1,5 @@
-### Hi there, I'm Aezothoth(Az for short)
-- I’m currently working on a platformer called Leaving Nowhere
-- I’m currently learning unity development
+### Hi there, I'm Josh
+- I’m currently a CS student at FAU
 - Pronouns: He/Him
 
 <!--
